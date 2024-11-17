@@ -15,10 +15,10 @@ bool createLogin();
 string generatePassword();
 bool checkLogin();
 void viewPasswords();
-//check if html file is empty. 
+//check if html file is empty.
 bool fileIsEmpty(const string& filename) {
-    ifstream file(filename);
-    return file.peek() == ifstream::traits_type::eof(); // Checks if the file is empty
+	ifstream file(filename);
+	return file.peek() == ifstream::traits_type::eof(); // Checks if the file is empty
 };
 bool generateHtmlDoc(ofstream& myDoc);
 bool setIdentity() {
@@ -131,13 +131,11 @@ int main() {
 	cout<<"Are you an existing user: ";
 	response = responseCheck();
 	if(response == true) {
-		existingUser = true;
-		getIdentity();
+		existingUser = getIdentity();
 	} else {
 		existingUser = false;
 		setIdentity();
 	};
-	existingUser = getIdentity();
 	if (existingUser) {
 		cout<<"Your file has been found!";
 		cout<<endl;
@@ -186,9 +184,12 @@ bool createLogin() {
 		if (html_response) {
 			ofstream myDoc(html_doc, ios::app);
 			if (fileIsEmpty(html_doc)) {
-                generateHtmlDoc(myDoc);
-            }
-			myDoc << "<tr><td>" << siteName << "</td><td>" << password << "</td></tr>\n";
+				generateHtmlDoc(myDoc);
+			}
+			myDoc << "<tr><td><a href='https://" << siteName
+			      << "' target='_blank'><i class='fas fa-external-link-alt'></i> "
+			      << siteName << "</a></td><td>"
+			      << password << "</td></tr>\n";
 			myDoc.close();
 		}
 		if(response !=true) {
@@ -286,24 +287,89 @@ void viewPasswords() {
 		cout << "Error opening file." << endl;
 	}
 };
+
 bool generateHtmlDoc(ofstream& myDoc) {
 	bool isSuccessful = false;
 	if (myDoc.is_open()) {
 		myDoc << "<!DOCTYPE html>\n"
-		      << "<html>\n"
+		      << "<html lang=\"en\">\n"
 		      << "<head>\n"
+		      << "<meta charset=\"UTF-8\">\n"
+		      << "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n"
+		      << "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
 		      << "<title>Password Manager</title>\n"
+		      << "<!-- Bootstrap CSS -->\n"
+		      << "<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css\" rel=\"stylesheet\">\n"
+		      << "<!-- Font Awesome for icons -->\n"
+		      << "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css\">\n"
 		      << "<style>\n"
-		      << "table { width: 50%; border-collapse: collapse; margin: 20px 0; }\n"
-		      << "th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }\n"
-		      << "th { background-color: #f2f2f2; }\n"
-		      << "tr:nth-child(even) { background-color: #f9f9f9; }\n"
+		      << "body {\n"
+		      << "    background-color: #1e1e2f;\n"
+		      << "    color: #e0e0e0;\n"
+		      << "    display: flex;\n"
+		      << "    justify-content: center;\n"
+		      << "    align-items: center;\n"
+		      << "    min-height: 100vh;\n"
+		      << "    margin: 0;\n"
+		      << "    font-family: 'Arial', sans-serif;\n"
+		      << "}\n"
+		      << "table {\n"
+		      << "    width: 70%;\n"
+		      << "    border-collapse: collapse;\n"
+		      << "    background-color: #2a2a3b;\n"
+		      << "    border-radius: 8px;\n"
+		      << "    overflow: hidden;\n"
+		      << "    animation: fadeIn 1s ease-in-out;\n"
+		      << "    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);\n"
+		      << "}\n"
+		      << "th, td {\n"
+		      << "    padding: 15px 20px;\n"
+		      << "    text-align: left;\n"
+		      << "}\n"
+		      << "th {\n"
+		      << "    background-color: #3b3b52;\n"
+		      << "    color: #ffffff;\n"
+		      << "    text-transform: uppercase;\n"
+		      << "    font-weight: bold;\n"
+		      << "}\n"
+		      << "tr:nth-child(even) {\n"
+		      << "    background-color: #33334d;\n"
+		      << "}\n"
+		      << "tr:hover {\n"
+		      << "    background-color: #444466;\n"
+		      << "    cursor: pointer;\n"
+		      << "    transition: background-color 0.3s;\n"
+		      << "}\n"
+		      << "a {\n"
+		      << "    color: #5dade2;\n"
+		      << "    text-decoration: none;\n"
+		      << "    font-weight: 600;\n"
+		      << "    display: flex;\n"
+		      << "    align-items: center;\n"
+		      << "}\n"
+		      << "a:hover {\n"
+		      << "    color: #76c7f2;\n"
+		      << "}\n"
+		      << "i {\n"
+		      << "    margin-right: 8px;\n"
+		      << "}\n"
+		      << "td:last-child {\n"
+		      << "    font-family: 'Courier New', Courier, monospace;\n"
+		      << "    font-weight: 500;\n"
+		      << "}\n"
+		      << "@keyframes fadeIn {\n"
+		      << "    from { opacity: 0; }\n"
+		      << "    to { opacity: 1; }\n"
+		      << "}\n"
 		      << "</style>\n"
 		      << "</head>\n"
 		      << "<body>\n"
-		      << "<h2>Stored Passwords</h2>\n"
+		      << "<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js\"></script>\n"
 		      << "<table>\n"
-		      << "<tr><th>Site Name</th><th>Password</th></tr>\n";
+		      << "<thead>\n"
+		      << "<tr><th>Site Name</th><th>Password</th></tr>\n"
+		      << "</thead>\n";
+
 		isSuccessful = true;
 	}
 	return isSuccessful;
